@@ -1,0 +1,22 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 09-28-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <div class="slds-box" style="position: static;">
+        <c-search-component
+        placeholder="Search" 
+        objectconfig ={ObjectConfig}
+        onlookup={handleAccountChange}
+        oninputchange={handlesearchInputChange}
+        label-name="contact/company"    
+        >
+        </c-search-component>
+        <lightning-button value="Add" label="Add" style="position: static;"></lightning-button>
+    </div>
+
+    
+</template>
