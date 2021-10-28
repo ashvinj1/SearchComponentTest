@@ -1,3 +1,11 @@
+<!--
+  @description       : 
+  @author            : ashvin.j@infogen-labs.com
+  @group             : 
+  @last modified on  : 10-28-2021
+ 
+-->
+
 <template>
     <div>
         <div class="slds-form-element">
@@ -7,9 +15,9 @@
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                             <template if:false={selectedRecord}>
                                 <div class="slds-p-top_none">
-                                    <lightning-input class={inputClass} type="search" id="input" 
+                                    <lightning-input class={inputClass} type="search" id="input" label={labelName}
                                                      onclick={handleClick} onblur={onBlur} onchange={handleInputChange}
-                                                     variant="label-hidden" autocomplete="off" placeholder={placeholder}>
+                                                     autocomplete="off" placeholder={placeholder}>
                                     </lightning-input>
                                 </div>
                             </template>

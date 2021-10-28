@@ -1,52 +1,24 @@
-import { LightningElement, api, track, wire } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { LightningElement, api } from 'lwc';
 import search from '@salesforce/apex/SearchController.search';
 const DELAY = 300;
+
 export default class SearchComponent extends LightningElement {
-
-    @api valueId;
-    @api valueName;
-    @api objectconfig = [{'label':  'Account', 'APIName': 'Account', 'fields':'Name,AccountNumber', 'displayFields':'Name,AccountNumber', 'iconName': 'standard:account'},
-                         {'label':  'Contact', 'APIName': 'Contact', 'fields':'Name,FirstName,LastName,Email,Phone','displayFields':'Name,Phone,Email', 'iconName': 'standard:contact', 
-                          'FilterCondition' : 'RecordType.DeveloperName = \'Investor\'', }];
-    @api objName = 'Account';
-    @api iconName = 'standard:account';
-    @api labelNameList ;
-    @api labelName;
-    @api readOnly = false;
+    @api objectconfig;
     @api currentRecordId;
-    @api placeholder = 'Search';
-    @api createRecord;
-    @api fields = ['Name'];
-    @api displayFields = 'Name, Rating, AccountNumber';
-
-    @track error;
-
+    @api placeholder;
+    @api labelName;
+    error;
     searchTerm;
     delayTimeout;
-
     searchRecords ;
     selectedRecord;
-    objectLabel;
-    isLoading = false;
-
-    field;
-    field1;
-    field2;
-    fieldList =[] ;
-    ICON_URL = '/apexpages/slds/latest/assets/icons/{0}-sprite/svg/symbols.svg#{1}';
     boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus';
     inputClass = '';
-    connectedCallback(){
-       console.log('objectConfig'+this.objectConfig);
-    }
-
+    
+    // This function is called when user starts typing into input search
     handleInputChange(event){
         window.clearTimeout(this.delayTimeout);
         const searchKey = event.target.value;
-        //this.isLoading = true;
-        
         this.delayTimeout = setTimeout(() => {
             if(searchKey.length >= 2){
                 var inputObjConfig = JSON.stringify(this.objectconfig);
@@ -63,7 +35,6 @@ export default class SearchComponent extends LightningElement {
                     const keys = Object.keys(allResult);
                     keys.forEach((key, index) => {
                         for(var i=0;i<allResult[key].length;i++){
-                            
                             recordArray.push(allResult[key][i]);
                         }
                     });
@@ -83,18 +54,14 @@ export default class SearchComponent extends LightningElement {
                 .catch(error => {
                     console.log('Error:', error);
                 })
-                .finally( ()=>{
-                    //this.isLoading = false;
-                });
-                
             }
         }, DELAY);
     }
 
+    //This function is called when user selects a record from dropdown
     handleSelect(event){
         console.log('In handleSelect');
         let recordId = event.currentTarget.dataset.recordId;
-        
         let selectRecord = this.searchRecords.find((item) => {
             return item.Id === recordId;
         });
@@ -113,29 +80,21 @@ export default class SearchComponent extends LightningElement {
             }
         });
         this.dispatchEvent(selectedEvent);
-        
     }
 
-    handleClick() {
-        
+    //This function is called when a user clicks inside input search
+    handleClick(){
         this.inputClass = 'slds-has-focus';
         this.boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus slds-is-open';
     }
 
-    onBlur() {
+    //This function is called when a user clicks outside the input search bar
+    onBlur(){
         this.blurTimeout = setTimeout(() =>  {this.boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus'}, 300);
     }
 
-    handleRemovePill() {
-        this.selectedRecord = undefined;
-        this.dispatchEvent(new CustomEvent('lookupselected', {detail:  {
-            "selectedId": ""
-        } }));
-    }
-
-
-    @api handleClose(){
-        console.log('***In handleClose***');
+    //This function is called when user removes selected record from dropdown
+   @api handleClose(){
         this.selectedRecord = undefined;
         this.searchRecords  = undefined;
         let recordId = undefined;
@@ -151,13 +110,5 @@ export default class SearchComponent extends LightningElement {
             }
         });
         this.dispatchEvent(selectedEvent);
-    }
-
-    titleCase(string) {
-        var sentence = string.toLowerCase().split(" ");
-        for(var i = 0; i< sentence.length; i++){
-            sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
-        }
-        return sentence;
     }
 }
